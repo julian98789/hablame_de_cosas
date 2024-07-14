@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chat with Spring Boot & WebSocket</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <div id="messageArea"></div>
+            <div class="mb-3">
+                <label for="username" class="form-label">Nombre de usuario:</label>
+                <input type="text" class="form-control" id="username" placeholder="Introduce tu nombre">
+            </div>
+
+            <div class="mb-3">
+                <label for="messageInput" class="form-label">Mensaje:</label>
+                <input type="text" class="form-control" id="messageInput" placeholder="Introduce tu mensaje">
+            </div>
+            <button onclick="sendMessage()" class="btn btn-primary mt-3">Send</button>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+    let socket = new WebSocket("ws://localhost:8080/chat");
+
+    socket.onmessage = function(event) {
+        let messageArea = document.getElementById("messageArea");
+        messageArea.innerHTML += '<p>' + event.data + '</p>';
+    };
+
+    function sendMessage() {
+        let username = document.getElementById("username").value;
+        let messageInput = document.getElementById("messageInput");
+
+        let fullMessage = username + ": " + messageInput.value;
+        socket.send(fullMessage);
+        messageInput.value = '';
+    }
+</script>
+</body>
+</html>
