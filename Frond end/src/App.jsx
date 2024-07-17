@@ -1,14 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
-  // Estados locales para almacenar el nombre de usuario, el mensaje actual, los mensajes recibidos y posibles errores
   const [username, setUsername] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState('');
-  
-  // Referencia mutable para almacenar el WebSocket
   const socketRef = useRef(null);
 
   useEffect(() => {
@@ -45,44 +41,44 @@ const App = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="card">
-        <div className="card-body">
-          {/* Área para mostrar los mensajes recibidos */}
-          <div id="messageArea">
-            {messages.map((msg, index) => (
-              <p key={index}>{msg}</p>
-            ))}
-          </div>
-          {/* Mostrar el mensaje de error si existe */}
-          {error && <div className="alert alert-danger">{error}</div>}
-          {/* Campo de entrada para el nombre de usuario */}
-          <div className="mb-3">
-            <label htmlFor="username" className="form-label">Nombre de usuario:</label>
-            <input
-              type="text"
-              className="form-control"
-              id="username"
-              placeholder="Introduce tu nombre"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
-          {/* Campo de entrada para el mensaje */}
-          <div className="mb-3">
-            <label htmlFor="messageInput" className="form-label">Mensaje:</label>
-            <input
-              type="text"
-              className="form-control"
-              id="messageInput"
-              placeholder="Introduce tu mensaje"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-          </div>
-          {/* Botón para enviar el mensaje */}
-          <button onClick={sendMessage} className="btn btn-primary mt-3">Enviar</button>
+    <div className="container mx-auto mt-5">
+      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        {/* Área para mostrar los mensajes recibidos */}
+        <div id="messageArea" className="mb-4">
+          {messages.map((msg, index) => (
+            <p key={index} className="text-gray-700">{msg}</p>
+          ))}
         </div>
+        {/* Mostrar el mensaje de error si existe */}
+        {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">{error}</div>}
+        {/* Campo de entrada para el nombre de usuario */}
+        <div className="mb-4">
+          <label htmlFor="username" className="block text-gray-700 text-sm font-bold mb-2">Nombre de usuario:</label>
+          <input
+            type="text"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="username"
+            placeholder="Introduce tu nombre"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        {/* Campo de entrada para el mensaje */}
+        <div className="mb-6">
+          <label htmlFor="messageInput" className="block text-gray-700 text-sm font-bold mb-2">Mensaje:</label>
+          <input
+            type="text"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="messageInput"
+            placeholder="Introduce tu mensaje"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+        </div>
+        {/* Botón para enviar el mensaje */}
+        <button onClick={sendMessage} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          Enviar
+        </button>
       </div>
     </div>
   );
