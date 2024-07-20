@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.text-aura1 {
+    text-shadow: 0px 0px 10px #fff;
+}
+
+.text-aura1:hover {
+    text-shadow: 0px 0px 15px #fff; /* Sombra del texto en hover */
+  }
+
+  .text-aura-llaves {
+    text-shadow: 0px 0px 10px #5dd3d1;
+}
+
+.text-aura-llaves:hover {
+    text-shadow: 0px 0px 15px #5dd3d1; /* Sombra del texto en hover */
+  }
+
+  .text-aura-corchetes {
+    text-shadow: 0px 0px 10px #afd366;
+}
+
+.text-aura-corchetes:hover {
+    text-shadow: 0px 0px 15px #afd366; /* Sombra del texto en hover */
+  }
+
+  
+  .text-aura-parentesis {
+    text-shadow: 0px 0px 10px #c299f8;
+}
+
+.text-aura-parentesis:hover {
+    text-shadow: 0px 0px 15px #c299f8; /* Sombra del texto en hover */
+  }
+  .text-aura-menor-mayor {
+    text-shadow: 0px 0px 10px #ffb7a3;
+}
+
+.text-aura-menor-mayor:hover {
+    text-shadow: 0px 0px 15px #ffb7a3; /* Sombra del texto en hover */
+  }
+  
+  .icon-shadow {
+    filter: drop-shadow(0px 0px 10px #fff);
+    transition: filter 0.3s ease;
+  }
+  
+  .icon-shadow:hover {
+    filter: drop-shadow(0px 0px 15px #fff);
+  }
