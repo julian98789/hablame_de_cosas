@@ -39,12 +39,7 @@ export const SideBar = () => {
                         <div className=" text-white cursor-default text-aura1"> Git Hub</div>
                         <div className="text-[rgb(175,211,102,255)] cursor-default text-aura-corchetes">&#41;</div>
                     </div>
-                    <a
-                       href="mailto:julianestebangomez06@gmail.com?subject=Asunto%20del%20Correo&body=Este%20es%20el%20cuerpo%20del%20correo."
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        
+                    <a href="mailto:julianestebangomez06@gmail.com">
                         <IoMail className="text-7xl text-white icon-shadow mt-8" />
                     </a>
                     <div className="flex text-3xl font-macondo font-bold gap-2 mt-2">
