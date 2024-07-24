@@ -1,11 +1,24 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { IoMdSend } from "react-icons/io";
 
-const Message = ({ text, isOwnMessage }) => (
-  <p className={`text-gray-700 ${isOwnMessage ? 'text-right' : 'text-left'}`}>
-    {text}
-  </p>
-);
+// Componente para mostrar un mensaje
+const Message = ({ text, isOwnMessage }) => {
+  // Separar el texto en nombre de usuario y mensaje
+  const [username, message] = text.split(': ', 2);
 
+  return (
+    <div className={`mb-2 ${isOwnMessage ? 'text-right' : 'text-left'}`}>
+      <div className={`inline-block px-4 py-2 rounded-lg ${isOwnMessage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}>
+        {!isOwnMessage && (
+          <p className="text-xs text-blue-600">{username}</p> // Nombre de usuario en color y tamaño pequeño
+        )}
+        <p className={`mt-1 ${isOwnMessage ? 'text-white' : 'text-gray-700'}`}>{message}</p> {/* Mensaje */}
+      </div>
+    </div>
+  );
+};
+
+// Componente para la entrada del nombre de usuario
 const UsernameInput = ({ username, setUsername, setIsUsernameSet, error, setError }) => (
   <div className="mb-4">
     <label htmlFor="username" className="block text-gray-700 text-sm font-bold mb-2">
@@ -35,27 +48,30 @@ const UsernameInput = ({ username, setUsername, setIsUsernameSet, error, setErro
   </div>
 );
 
-const MessageInput = ({ message, setMessage, sendMessage }) => (
-  <div className="mb-6">
-    <label htmlFor="messageInput" className="block text-gray-700 text-sm font-bold mb-2">
-      Mensaje:
-    </label>
+// Componente para la entrada del mensaje
+const MessageInput = ({ message, setMessage, sendMessage, handleKeyDown, textAreaRef }) => (
+  <div className="relative flex items-end mt-4">
     <textarea
-      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-24 resize-none"
+      ref={textAreaRef}
+      className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16"
       id="messageInput"
       placeholder="Introduce tu mensaje"
       value={message}
       onChange={(e) => setMessage(e.target.value)}
+      onKeyDown={handleKeyDown}
+      rows={1}
+      style={{ minHeight: '40px', maxHeight: '160px' }} // Limita a 4 líneas
     />
     <button
       onClick={sendMessage}
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2"
+      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline absolute right-5 bottom-1"
     >
-      Enviar
+      <IoMdSend />
     </button>
   </div>
 );
 
+// Componente principal del chat
 export const Chat = () => {
   const [username, setUsername] = useState('');
   const [message, setMessage] = useState('');
@@ -63,26 +79,31 @@ export const Chat = () => {
   const [error, setError] = useState('');
   const [isUsernameSet, setIsUsernameSet] = useState(false);
   const socketRef = useRef(null);
+  const textAreaRef = useRef(null);
 
+  // Efecto para manejar la conexión del WebSocket y la recepción de mensajes
   useEffect(() => {
+    // Conectar al WebSocket
     socketRef.current = new WebSocket('ws://localhost:8080/chat');
 
+    // Función para manejar los mensajes recibidos
     const handleMessage = (event) => {
       const receivedMessage = event.data;
       if (receivedMessage.startsWith(`${username}:`)) {
-        // Skip own messages from the server
         return;
       }
 
-      // Add received message to state
+      // Actualizar el estado de los mensajes con el nuevo mensaje recibido
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: receivedMessage, isOwnMessage: false, id: crypto.randomUUID() }
       ]);
     };
 
+    // Añadir el manejador de eventos para los mensajes recibidos
     socketRef.current.addEventListener('message', handleMessage);
 
+    // Manejadores para eventos de conexión y desconexión
     socketRef.current.onopen = () => {
       console.log('WebSocket connected');
     };
@@ -97,6 +118,7 @@ export const Chat = () => {
     };
   }, [username]);
 
+  // Función para enviar un mensaje
   const sendMessage = useCallback(() => {
     if (!username.trim() || !message.trim()) {
       setError('Nombre de usuario y mensaje no pueden estar vacíos.');
@@ -109,11 +131,11 @@ export const Chat = () => {
     }
 
     const fullMessage = `${username}: ${message}`;
-    
-    // Send the message
+
+    // Enviar el mensaje a través del WebSocket
     socketRef.current.send(fullMessage);
 
-    // Add the sent message to the state with a flag indicating it's an own message
+    // Actualizar el estado de los mensajes con el nuevo mensaje enviado
     setMessages((prevMessages) => [
       ...prevMessages,
       { text: fullMessage, isOwnMessage: true, id: crypto.randomUUID() }
@@ -121,12 +143,25 @@ export const Chat = () => {
 
     setMessage('');
     setError('');
+    textAreaRef.current.style.height = '40px'; // Restablecer la altura del textarea
   }, [username, message]);
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    } else {
+      // Ajustar la altura del textarea
+      const textArea = e.target;
+      textArea.style.height = 'auto'; // Restablecer la altura para calcular la altura correcta
+      textArea.style.height = `${textArea.scrollHeight}px`; // Establecer la altura basada en el contenido
+    }
+  };
+
   return (
-    <div className="flex justify-center ">
-      <div className="w-4/5 bg-[rgba(236,240,250,255)] shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div id="messageArea" className="mb-4 h-48 overflow-y-auto">
+    <div className="flex justify-center items-center ">
+      <div className="w-11/12 bg-[rgba(236,240,250,255)] shadow-lg rounded-lg px-6 py-4 flex flex-col h-[85vh]">
+        <div id="messageArea" className="flex-1 overflow-y-auto pb-4">
           {messages.map((msg) => (
             <Message key={msg.id} text={msg.text} isOwnMessage={msg.isOwnMessage} />
           ))}
@@ -149,6 +184,8 @@ export const Chat = () => {
             message={message}
             setMessage={setMessage}
             sendMessage={sendMessage}
+            handleKeyDown={handleKeyDown}
+            textAreaRef={textAreaRef}
           />
         )}
       </div>

@@ -8,13 +8,13 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 @Configuration
-@EnableWebSocket
+@EnableWebSocket // Activa el soporte para WebSockets en la aplicacion
 public class WebSocketConfig implements WebSocketConfigurer {
 
     @Autowired
-    ChatHandler chatHandler;
+    ChatHandler chatHandler; // Manejador de eventos de chat
 
-
+    // Registra el manejador de WebSocket y lo asocia con la URL "/chat"
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(chatHandler, "/chat").setAllowedOrigins("*");
