@@ -8,11 +8,14 @@ const Message = ({ text, isOwnMessage }) => {
 
   return (
     <div className={`mb-2 ${isOwnMessage ? 'text-right' : 'text-left'}`}>
-      <div className={`inline-block px-4 py-2 rounded-lg ${isOwnMessage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}>
+      <div 
+        className={`inline-block px-4 py-2 rounded-lg ${isOwnMessage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} max-w-full`} 
+        style={{ wordWrap: 'break-word' }}
+      >
         {!isOwnMessage && (
           <p className="text-xs text-blue-600">{username}</p> // Nombre de usuario en color y tamaño pequeño
         )}
-        <p className={`mt-1 ${isOwnMessage ? 'text-white' : 'text-gray-700'}`}>{message}</p> {/* Mensaje */}
+        <p className={`mt-1 ${isOwnMessage ? 'text-white text-sm' : 'text-gray-700 text-sm'}`}>{message}</p> {/* Mensaje */}
       </div>
     </div>
   );
@@ -38,6 +41,7 @@ const UsernameInput = ({ username, setUsername, setIsUsernameSet, error, setErro
           setError('El nombre de usuario no puede estar vacío.');
           return;
         }
+        localStorage.setItem('username', username); // Guardar el nombre de usuario en localStorage
         setIsUsernameSet(true);
         setError('');
       }}
@@ -50,10 +54,10 @@ const UsernameInput = ({ username, setUsername, setIsUsernameSet, error, setErro
 
 // Componente para la entrada del mensaje
 const MessageInput = ({ message, setMessage, sendMessage, handleKeyDown, textAreaRef }) => (
-  <div className="relative flex items-end mt-4">
+  <div className="relative flex items-end mt-4 justify-center">
     <textarea
       ref={textAreaRef}
-      className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16"
+      className="shadow appearance-none border rounded-lg w-full md:w-10/12 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16"
       id="messageInput"
       placeholder="Introduce tu mensaje"
       value={message}
@@ -64,7 +68,7 @@ const MessageInput = ({ message, setMessage, sendMessage, handleKeyDown, textAre
     />
     <button
       onClick={sendMessage}
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline absolute right-5 bottom-1"
+      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 md:py-3 md:px-3 rounded-full focus:outline-none focus:shadow-outline absolute right-5 bottom-1"
     >
       <IoMdSend />
     </button>
@@ -80,9 +84,21 @@ export const Chat = () => {
   const [isUsernameSet, setIsUsernameSet] = useState(false);
   const socketRef = useRef(null);
   const textAreaRef = useRef(null);
+  const messageAreaRef = useRef(null); // Nueva referencia para el área de mensajes
 
   // Efecto para manejar la conexión del WebSocket y la recepción de mensajes
   useEffect(() => {
+    // Restaurar el nombre de usuario y los mensajes desde localStorage
+    const storedUsername = localStorage.getItem('username');
+    const storedMessages = JSON.parse(localStorage.getItem('messages')) || [];
+
+    if (storedUsername) {
+      setUsername(storedUsername);
+      setIsUsernameSet(true);
+    }
+
+    setMessages(storedMessages);
+
     // Conectar al WebSocket
     socketRef.current = new WebSocket('ws://localhost:8080/chat');
 
@@ -94,10 +110,14 @@ export const Chat = () => {
       }
 
       // Actualizar el estado de los mensajes con el nuevo mensaje recibido
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: receivedMessage, isOwnMessage: false, id: crypto.randomUUID() }
-      ]);
+      setMessages((prevMessages) => {
+        const newMessages = [
+          ...prevMessages,
+          { text: receivedMessage, isOwnMessage: false, id: crypto.randomUUID() }
+        ];
+        localStorage.setItem('messages', JSON.stringify(newMessages)); // Guardar los mensajes en localStorage
+        return newMessages;
+      });
     };
 
     // Añadir el manejador de eventos para los mensajes recibidos
@@ -136,10 +156,14 @@ export const Chat = () => {
     socketRef.current.send(fullMessage);
 
     // Actualizar el estado de los mensajes con el nuevo mensaje enviado
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { text: fullMessage, isOwnMessage: true, id: crypto.randomUUID() }
-    ]);
+    setMessages((prevMessages) => {
+      const newMessages = [
+        ...prevMessages,
+        { text: fullMessage, isOwnMessage: true, id: crypto.randomUUID() }
+      ];
+      localStorage.setItem('messages', JSON.stringify(newMessages)); // Guardar los mensajes en localStorage
+      return newMessages;
+    });
 
     setMessage('');
     setError('');
@@ -158,10 +182,22 @@ export const Chat = () => {
     }
   };
 
+  // Desplazar hacia abajo el contenedor de mensajes
+  useEffect(() => {
+    if (messageAreaRef.current) {
+      messageAreaRef.current.scrollTop = messageAreaRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // Renderizar solo si el estado de isUsernameSet está determinado
+  if (!isUsernameSet && localStorage.getItem('username') !== null) {
+    setIsUsernameSet(true);
+  }
+
   return (
-    <div className="flex justify-center items-center ">
+    <div className="flex justify-center items-center">
       <div className="w-11/12 bg-[rgba(236,240,250,255)] shadow-lg rounded-lg px-6 py-4 flex flex-col h-[85vh]">
-        <div id="messageArea" className="flex-1 overflow-y-auto pb-4">
+        <div id="messageArea" className="flex-1 overflow-y-auto pb-4" ref={messageAreaRef}>
           {messages.map((msg) => (
             <Message key={msg.id} text={msg.text} isOwnMessage={msg.isOwnMessage} />
           ))}
