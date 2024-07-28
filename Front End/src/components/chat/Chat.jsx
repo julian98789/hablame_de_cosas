@@ -3,19 +3,18 @@ import { IoMdSend } from "react-icons/io";
 
 // Componente para mostrar un mensaje
 const Message = ({ text, isOwnMessage }) => {
-  // Separar el texto en nombre de usuario y mensaje
   const [username, message] = text.split(': ', 2);
 
   return (
     <div className={`mb-2 ${isOwnMessage ? 'text-right' : 'text-left'}`}>
       <div 
-        className={`inline-block px-4 py-2 rounded-lg ${isOwnMessage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} max-w-full`} 
+        className={`inline-block px-4 py-2 rounded-lg ${isOwnMessage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} max-w-64 sm:max-w-sm md:max-w-md lg:max-w-lg`} 
         style={{ wordWrap: 'break-word' }}
       >
         {!isOwnMessage && (
-          <p className="text-xs text-blue-600">{username}</p> // Nombre de usuario en color y tamaño pequeño
+          <p className="text-xs text-blue-600">{username}</p>
         )}
-        <p className={`mt-1 ${isOwnMessage ? 'text-white text-sm' : 'text-gray-700 text-sm'}`}>{message}</p> {/* Mensaje */}
+        <p className={`mt-1 ${isOwnMessage ? 'text-white text-sm' : 'text-gray-700 text-sm'}`}>{message}</p>
       </div>
     </div>
   );
@@ -41,7 +40,7 @@ const UsernameInput = ({ username, setUsername, setIsUsernameSet, error, setErro
           setError('El nombre de usuario no puede estar vacío.');
           return;
         }
-        localStorage.setItem('username', username); // Guardar el nombre de usuario en localStorage
+        localStorage.setItem('username', username);
         setIsUsernameSet(true);
         setError('');
       }}
@@ -57,18 +56,18 @@ const MessageInput = ({ message, setMessage, sendMessage, handleKeyDown, textAre
   <div className="relative flex items-end mt-4 justify-center">
     <textarea
       ref={textAreaRef}
-      className="shadow appearance-none border rounded-lg w-full md:w-10/12 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16"
+      className="shadow appearance-none border rounded-lg w-full md:w-10/12 py-[15px] px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16"
       id="messageInput"
       placeholder="Introduce tu mensaje"
       value={message}
       onChange={(e) => setMessage(e.target.value)}
       onKeyDown={handleKeyDown}
       rows={1}
-      style={{ minHeight: '40px', maxHeight: '160px' }} // Limita a 4 líneas
+      style={{ minHeight: '40px', maxHeight: '160px' }} // Tamaño ajustado
     />
     <button
       onClick={sendMessage}
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 md:py-3 md:px-3 rounded-full focus:outline-none focus:shadow-outline absolute right-5 bottom-1"
+      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-3 md:py-4 md:px-4 rounded-full focus:outline-none focus:shadow-outline absolute right-5 bottom-1"
     >
       <IoMdSend />
     </button>
@@ -84,11 +83,9 @@ export const Chat = () => {
   const [isUsernameSet, setIsUsernameSet] = useState(false);
   const socketRef = useRef(null);
   const textAreaRef = useRef(null);
-  const messageAreaRef = useRef(null); // Nueva referencia para el área de mensajes
+  const messageAreaRef = useRef(null);
 
-  // Efecto para manejar la conexión del WebSocket y la recepción de mensajes
   useEffect(() => {
-    // Restaurar el nombre de usuario y los mensajes desde localStorage
     const storedUsername = localStorage.getItem('username');
     const storedMessages = JSON.parse(localStorage.getItem('messages')) || [];
 
@@ -99,31 +96,26 @@ export const Chat = () => {
 
     setMessages(storedMessages);
 
-    // Conectar al WebSocket
     socketRef.current = new WebSocket('ws://localhost:8080/chat');
 
-    // Función para manejar los mensajes recibidos
     const handleMessage = (event) => {
       const receivedMessage = event.data;
       if (receivedMessage.startsWith(`${username}:`)) {
         return;
       }
 
-      // Actualizar el estado de los mensajes con el nuevo mensaje recibido
       setMessages((prevMessages) => {
         const newMessages = [
           ...prevMessages,
           { text: receivedMessage, isOwnMessage: false, id: crypto.randomUUID() }
         ];
-        localStorage.setItem('messages', JSON.stringify(newMessages)); // Guardar los mensajes en localStorage
+        localStorage.setItem('messages', JSON.stringify(newMessages));
         return newMessages;
       });
     };
 
-    // Añadir el manejador de eventos para los mensajes recibidos
     socketRef.current.addEventListener('message', handleMessage);
 
-    // Manejadores para eventos de conexión y desconexión
     socketRef.current.onopen = () => {
       console.log('WebSocket connected');
     };
@@ -138,7 +130,6 @@ export const Chat = () => {
     };
   }, [username]);
 
-  // Función para enviar un mensaje
   const sendMessage = useCallback(() => {
     if (!username.trim() || !message.trim()) {
       setError('Nombre de usuario y mensaje no pueden estar vacíos.');
@@ -152,22 +143,20 @@ export const Chat = () => {
 
     const fullMessage = `${username}: ${message}`;
 
-    // Enviar el mensaje a través del WebSocket
     socketRef.current.send(fullMessage);
 
-    // Actualizar el estado de los mensajes con el nuevo mensaje enviado
     setMessages((prevMessages) => {
       const newMessages = [
         ...prevMessages,
         { text: fullMessage, isOwnMessage: true, id: crypto.randomUUID() }
       ];
-      localStorage.setItem('messages', JSON.stringify(newMessages)); // Guardar los mensajes en localStorage
+      localStorage.setItem('messages', JSON.stringify(newMessages));
       return newMessages;
     });
 
     setMessage('');
     setError('');
-    textAreaRef.current.style.height = '40px'; // Restablecer la altura del textarea
+    textAreaRef.current.style.height = '60px'; // Restablecer la altura del textarea
   }, [username, message]);
 
   const handleKeyDown = (e) => {
@@ -175,28 +164,25 @@ export const Chat = () => {
       e.preventDefault();
       sendMessage();
     } else {
-      // Ajustar la altura del textarea
       const textArea = e.target;
-      textArea.style.height = 'auto'; // Restablecer la altura para calcular la altura correcta
-      textArea.style.height = `${textArea.scrollHeight}px`; // Establecer la altura basada en el contenido
+      textArea.style.height = 'auto';
+      textArea.style.height = `${textArea.scrollHeight}px`;
     }
   };
 
-  // Desplazar hacia abajo el contenedor de mensajes
   useEffect(() => {
     if (messageAreaRef.current) {
       messageAreaRef.current.scrollTop = messageAreaRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // Renderizar solo si el estado de isUsernameSet está determinado
   if (!isUsernameSet && localStorage.getItem('username') !== null) {
     setIsUsernameSet(true);
   }
 
   return (
     <div className="flex justify-center items-center">
-      <div className="w-11/12 bg-[rgba(236,240,250,255)] shadow-lg rounded-lg px-6 py-4 flex flex-col h-[85vh]">
+      <div className="md:w-11/12 w-full bg-[rgba(236,240,250,255)] shadow-lg rounded-lg md:px-6 px-2 py-4 flex flex-col h-[90vh] md:h-[85vh]">
         <div id="messageArea" className="flex-1 overflow-y-auto pb-4" ref={messageAreaRef}>
           {messages.map((msg) => (
             <Message key={msg.id} text={msg.text} isOwnMessage={msg.isOwnMessage} />
