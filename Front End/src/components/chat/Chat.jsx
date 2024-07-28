@@ -67,12 +67,14 @@ const MessageInput = ({ message, setMessage, sendMessage, handleKeyDown, textAre
     />
     <button
       onClick={sendMessage}
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-3 md:py-4 md:px-4 rounded-full focus:outline-none focus:shadow-outline absolute right-5 bottom-1"
+      className={`bg-blue-500  text-white font-bold py-3 px-3 md:py-4 md:px-4 rounded-full focus:outline-none focus:shadow-outline absolute right-5 bottom-1 ${message.trim() === '' ? 'opacity-50 ' : 'hover:bg-blue-700'}`}
+      disabled={message.trim() === ''}
     >
       <IoMdSend />
     </button>
   </div>
 );
+
 
 // Componente principal del chat
 export const Chat = () => {
