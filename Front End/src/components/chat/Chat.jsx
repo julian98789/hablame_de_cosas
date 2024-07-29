@@ -6,15 +6,15 @@ const Message = ({ text, isOwnMessage }) => {
   const [username, message] = text.split(': ', 2);
 
   return (
-    <div className={`mb-2 ${isOwnMessage ? 'text-right' : 'text-left'}`}>
+    <div className={`mb-2 text-aura1 ${isOwnMessage ? 'text-right' : 'text-left'}`}>
       <div 
-        className={`inline-block px-4 py-2 rounded-lg ${isOwnMessage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} max-w-64 sm:max-w-sm md:max-w-md lg:max-w-lg`} 
-        style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap' }} // Asegura que los saltos de línea se preserven
+        className={`inline-block px-4 py-2 rounded-lg  ${isOwnMessage ? 'bg-[rgba(26,36,41,255)]  text-white' : 'bg-[#334650]  text-white'} max-w-64  md:max-w-md lg:max-w-lg`} 
+        style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap' }} 
       >
         {!isOwnMessage && (
-          <p className="text-xs text-blue-600">{username}</p>
+          <p className="text-xs text-[rgb(194,153,248,255)]  text-aura1 ">{username}</p>
         )}
-        <p className={`mt-1 ${isOwnMessage ? 'text-white text-sm' : 'text-gray-700 text-sm'}`}>{message}</p>
+        <p className={`mt-1 ${isOwnMessage ? 'text-white text-sm' : 'text-white text-sm'}`}>{message}</p>
       </div>
     </div>
   );
@@ -54,24 +54,26 @@ const UsernameInput = ({ username, setUsername, setIsUsernameSet, error, setErro
 // Componente para la entrada del mensaje
 const MessageInput = ({ message, setMessage, sendMessage, handleKeyDown, textAreaRef }) => (
   <div className="relative flex items-end mt-4 justify-center">
-    <textarea
-      ref={textAreaRef}
-      className="shadow appearance-none border rounded-lg w-full md:w-10/12 py-[14px] px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16"
-      id="messageInput"
-      placeholder="Introduce tu mensaje"
-      value={message}
-      onChange={(e) => setMessage(e.target.value)}
-      onKeyDown={handleKeyDown}
-      rows={1}
-      style={{ minHeight: '50px', maxHeight: '160px' }} // Tamaño ajustado
-    />
-    <button
-      onClick={sendMessage}
-      className={`bg-blue-500  text-white font-bold py-3 px-3 md:py-4 md:px-4 rounded-full focus:outline-none focus:shadow-outline absolute right-5 bottom-1 ${message.trim() === '' ? 'opacity-50 ' : 'hover:bg-blue-700'}`}
-      disabled={message.trim() === ''}
-    >
-      <IoMdSend />
-    </button>
+    <div className="relative flex w-full md:w-10/12">
+      <textarea
+        ref={textAreaRef}
+        className="appearance-none bg-[rgba(54,68,72,255)] textarea-shadow text-aura1 border border-neutral-200 rounded-lg w-full py-[14px] px-3 text-white placeholder-white leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16"
+        id="messageInput"
+        placeholder="Introduce tu mensaje"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={handleKeyDown}
+        rows={1}
+        style={{ minHeight: '50px', maxHeight: '160px' }} // Tamaño ajustado
+      />
+      <button
+        onClick={sendMessage}
+        className={`bg-[rgba(26,36,41,255)] font-bold py-2 px-2 md:py-3 md:px-3  rounded-full absolute right-6 md:bottom-[5px] bottom-2 ${message.trim() === '' ? 'opacity-50' : 'enviar-shadow'}`}
+        disabled={message.trim() === ''}
+      >
+        <IoMdSend className='text-white icon-shadow' />
+      </button>
+    </div>
   </div>
 );
 
@@ -184,7 +186,7 @@ export const Chat = () => {
 
   return (
     <div className="flex justify-center items-center">
-      <div className="md:w-11/12 w-full bg-[rgba(236,240,250,255)] shadow-lg rounded-lg md:px-6 px-2 py-4 flex flex-col h-[90vh] md:h-[85vh]">
+      <div className="md:w-11/12 w-full bg-[rgba(0,5,9,255)] box-shadow shadow-lg rounded-lg md:px-6 px-2 py-4 flex flex-col h-[90vh] md:h-[85vh]">
         <div id="messageArea" className="flex-1 overflow-y-auto pb-4" ref={messageAreaRef}>
           {messages.map((msg) => (
             <Message key={msg.id} text={msg.text} isOwnMessage={msg.isOwnMessage} />

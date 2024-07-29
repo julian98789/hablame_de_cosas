@@ -11,7 +11,7 @@ export const Home = () => {
     const [stateSideBar, setStateSideBar] = useState(false)
 
     return (
-        <div className="flex  relative ">
+        <div className="flex  relative bg-[rgba(10,16,23,255)] ">
             <SideBarMovile state={stateSideBar} setState={setStateSideBar} />
             <SideBar state={stateSideBar} setState={setStateSideBar} />
             <div className="flex flex-col w-full">

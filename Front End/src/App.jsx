@@ -7,9 +7,12 @@ function App() {
 
   return (
     <>
-      <Routes>
+    <div className='bg-[rgba(10,16,23,255)] h-screen'>
+    <Routes>
         <Route path='/' element={<Home />} />
       </Routes>
+    </div>
+      
       
     </>      
   )

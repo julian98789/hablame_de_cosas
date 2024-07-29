@@ -50,3 +50,20 @@
   .icon-shadow:hover {
     filter: drop-shadow(0px 0px 15px #fff);
   }
+
+  .enviar-shadow {
+    filter: drop-shadow(0px 0px 2px #fff);
+    transition: filter 0.3s ease;
+  }
+  
+  .enviar-shadow:hover {
+    filter: drop-shadow(0px 0px 4px #fff);
+  }
+
+  .textarea-shadow {
+    box-shadow: 0px 0px 15px #364448;
+  }
+
+  .box-shadow {
+    box-shadow: 0px 0px 40px #c299f8;
+  }
