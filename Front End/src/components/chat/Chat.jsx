@@ -9,7 +9,7 @@ const Message = ({ text, isOwnMessage }) => {
     <div className={`mb-2 ${isOwnMessage ? 'text-right' : 'text-left'}`}>
       <div 
         className={`inline-block px-4 py-2 rounded-lg ${isOwnMessage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} max-w-64 sm:max-w-sm md:max-w-md lg:max-w-lg`} 
-        style={{ wordWrap: 'break-word' }}
+        style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap' }} // Asegura que los saltos de línea se preserven
       >
         {!isOwnMessage && (
           <p className="text-xs text-blue-600">{username}</p>
@@ -56,14 +56,14 @@ const MessageInput = ({ message, setMessage, sendMessage, handleKeyDown, textAre
   <div className="relative flex items-end mt-4 justify-center">
     <textarea
       ref={textAreaRef}
-      className="shadow appearance-none border rounded-lg w-full md:w-10/12 py-[15px] px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16"
+      className="shadow appearance-none border rounded-lg w-full md:w-10/12 py-[14px] px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16"
       id="messageInput"
       placeholder="Introduce tu mensaje"
       value={message}
       onChange={(e) => setMessage(e.target.value)}
       onKeyDown={handleKeyDown}
       rows={1}
-      style={{ minHeight: '40px', maxHeight: '160px' }} // Tamaño ajustado
+      style={{ minHeight: '50px', maxHeight: '160px' }} // Tamaño ajustado
     />
     <button
       onClick={sendMessage}
@@ -158,7 +158,7 @@ export const Chat = () => {
 
     setMessage('');
     setError('');
-    textAreaRef.current.style.height = '60px'; // Restablecer la altura del textarea
+    textAreaRef.current.style.height = '50px'; // Restablecer la altura del textarea
   }, [username, message]);
 
   const handleKeyDown = (e) => {
