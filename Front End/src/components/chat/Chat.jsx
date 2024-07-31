@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { IoMdSend } from "react-icons/io";
+import toast, { Toaster } from 'react-hot-toast';
 
 // Componente para mostrar un mensaje
 const Message = ({ text, isOwnMessage }) => {
@@ -7,21 +8,20 @@ const Message = ({ text, isOwnMessage }) => {
 
   return (
     <div className={`mb-2 text-aura1 ${isOwnMessage ? 'text-right' : 'text-left'}`}>
-      <div 
-        className={`inline-block px-4 py-2 rounded-lg  ${isOwnMessage ? 'bg-[rgba(26,36,41,255)]  text-white' : 'bg-[#334650]  text-white'} max-w-64  md:max-w-md lg:max-w-lg`} 
-        style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap' }} 
+      <div
+        className={`inline-block px-4 py-2 rounded-lg ${isOwnMessage ? 'bg-[rgba(26,36,41,255)] text-white' : 'bg-[#334650] text-white'} max-w-64 md:max-w-md lg:max-w-lg`}
+        style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}
       >
         {!isOwnMessage && (
-          <p className="text-xs text-[rgb(194,153,248,255)]  text-aura1 ">{username}</p>
+          <p className="text-xs text-[rgb(194,153,248,255)] text-aura1">{username}</p>
         )}
-        <p className={`mt-1 ${isOwnMessage ? 'text-white text-sm' : 'text-white text-sm'}`}>{message}</p>
+        <p className={`mt-1 text-base ${isOwnMessage ? 'text-white' : 'text-white'}`}>{message}</p>
       </div>
     </div>
   );
 };
-
 // Componente para la entrada del nombre de usuario
-const UsernameInput = ({ username, setUsername, setIsUsernameSet, error, setError }) => (
+const UsernameInput = ({ username, setUsername, setIsUsernameSet }) => (
   <div className="mb-4">
     <label htmlFor="username" className="block text-gray-700 text-sm font-bold mb-2">
       Nombre de usuario:
@@ -37,12 +37,17 @@ const UsernameInput = ({ username, setUsername, setIsUsernameSet, error, setErro
     <button
       onClick={() => {
         if (!username.trim()) {
-          setError('El nombre de usuario no puede estar vacío.');
+          toast.dismiss();
+          toast.error('El nombre de usuario no puede estar vacío.', {
+            style: {
+              backgroundColor: 'black',
+              color: 'white',
+            },
+          });
           return;
         }
         localStorage.setItem('username', username);
         setIsUsernameSet(true);
-        setError('');
       }}
       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2"
     >
@@ -57,9 +62,9 @@ const MessageInput = ({ message, setMessage, sendMessage, handleKeyDown, textAre
     <div className="relative flex w-full md:w-10/12">
       <textarea
         ref={textAreaRef}
-        className="appearance-none bg-[rgba(54,68,72,255)] textarea-shadow text-aura1 border border-neutral-200 rounded-lg w-full py-[14px] px-3 text-white placeholder-white leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16"
+        className={`appearance-none scrollbar-custom bg-[rgba(54,68,72,255)] ${message.trim() === '' ? 'border-none shadow-none placeholder-gray-400' : 'textarea-shadow border border-neutral-200 text-aura1'}  rounded-lg w-full py-[14px] px-3 text-white  leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16`}
         id="messageInput"
-        placeholder="Introduce tu mensaje"
+        placeholder="Escribe un mensaje"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
@@ -68,22 +73,20 @@ const MessageInput = ({ message, setMessage, sendMessage, handleKeyDown, textAre
       />
       <button
         onClick={sendMessage}
-        className={`bg-[rgba(26,36,41,255)] font-bold py-2 px-2 md:py-3 md:px-3  rounded-full absolute right-6 md:bottom-[5px] bottom-2 ${message.trim() === '' ? 'opacity-50' : 'enviar-shadow'}`}
+        className={`bg-[rgba(26,36,41,255)] font-bold py-2 px-2 md:py-3 md:px-3 rounded-full absolute right-4 md:bottom-[5px] bottom-2 ${message.trim() === '' ? 'opacity-50 shadow-none cursor-not-allowed' : 'enviar-shadow'}`}
         disabled={message.trim() === ''}
       >
-        <IoMdSend className='text-white icon-shadow' />
+        <IoMdSend className='text-white' />
       </button>
     </div>
   </div>
 );
-
 
 // Componente principal del chat
 export const Chat = () => {
   const [username, setUsername] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [error, setError] = useState('');
   const [isUsernameSet, setIsUsernameSet] = useState(false);
   const socketRef = useRef(null);
   const textAreaRef = useRef(null);
@@ -135,13 +138,14 @@ export const Chat = () => {
   }, [username]);
 
   const sendMessage = useCallback(() => {
-    if (!username.trim() || !message.trim()) {
-      setError('Nombre de usuario y mensaje no pueden estar vacíos.');
-      return;
-    }
-
     if (socketRef.current.readyState !== WebSocket.OPEN) {
-      setError('El WebSocket no está conectado.');
+      toast.dismiss();
+      toast.error('El WebSocket no está conectado.', {
+        style: {
+          backgroundColor: 'black',
+          color: 'white',
+        },
+      });
       return;
     }
 
@@ -159,7 +163,6 @@ export const Chat = () => {
     });
 
     setMessage('');
-    setError('');
     textAreaRef.current.style.height = '50px'; // Restablecer la altura del textarea
   }, [username, message]);
 
@@ -186,27 +189,20 @@ export const Chat = () => {
 
   return (
     <div className="flex justify-center items-center">
-      <div className="md:w-11/12 w-full bg-[rgba(0,5,9,255)] box-shadow shadow-lg rounded-lg md:px-6 px-2 py-4 flex flex-col h-[90vh] md:h-[85vh]">
-        <div id="messageArea" className="flex-1 overflow-y-auto pb-4" ref={messageAreaRef}>
+      <div className="md:w-11/12 w-full bg-[rgba(0,5,9,255)] box-shadow shadow-lg rounded-lg md:px-6 px-2 py-4 flex flex-col h-[90vh] md:h-[94vh]">
+        <div id="messageArea" className="flex-1 overflow-y-auto pb-4 scrollbar-custom" ref={messageAreaRef}>
           {messages.map((msg) => (
             <Message key={msg.id} text={msg.text} isOwnMessage={msg.isOwnMessage} />
           ))}
         </div>
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-            {error}
-          </div>
-        )}
         {!isUsernameSet ? (
-          <UsernameInput 
+          <UsernameInput
             username={username}
             setUsername={setUsername}
             setIsUsernameSet={setIsUsernameSet}
-            error={error}
-            setError={setError}
           />
         ) : (
-          <MessageInput 
+          <MessageInput
             message={message}
             setMessage={setMessage}
             sendMessage={sendMessage}
@@ -214,6 +210,7 @@ export const Chat = () => {
             textAreaRef={textAreaRef}
           />
         )}
+        <Toaster />
       </div>
     </div>
   );

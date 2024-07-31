@@ -11,11 +11,11 @@ export const Home = () => {
     const [stateSideBar, setStateSideBar] = useState(false)
 
     return (
-        <div className="flex  relative bg-[rgba(10,16,23,255)] ">
+        <div className="flex  relative  ">
             <SideBarMovile state={stateSideBar} setState={setStateSideBar} />
             <SideBar state={stateSideBar} setState={setStateSideBar} />
             <div className="flex flex-col w-full">
-                <div className="w-full h-14 px-3 flex gap-4 items-center">
+                <div className="w-full h-14 md:h-5 px-3 flex gap-4 items-center">
                     <div
                         onClick={() => setStateSideBar(!stateSideBar)}
                         className="z-30  sm:hidden ">

@@ -65,5 +65,27 @@
   }
 
   .box-shadow {
-    box-shadow: 0px 0px 40px #c299f8;
+    box-shadow: 0px 0px 50px #c299f8;
   }
+
+  .scrollbar-custom {
+    padding-right: 5px; /* Espacio adicional para el scrollbar */
+  }
+/* Personalizar el scrollbar */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 8px; /* Ancho del scrollbar */
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent; /* Color de fondo del track */
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: #2d4141; /* Color del thumb */
+  border-radius: 4px; /* Esquinas redondeadas */
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: #213030; /* Color del thumb al pasar el mouse */
+}
+
