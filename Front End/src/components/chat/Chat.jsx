@@ -2,9 +2,18 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { IoMdSend } from "react-icons/io";
 import toast, { Toaster } from 'react-hot-toast';
 
+// Función para limpiar el texto del mensaje, eliminando líneas vacías
+const cleanMessage = (text) => {
+  return text
+    .split('\n')
+    .filter(line => line.trim() !== '')
+    .join('\n');
+};
+
 // Componente para mostrar un mensaje
 const Message = ({ text, isOwnMessage }) => {
   const [username, message] = text.split(': ', 2);
+  const cleanedMessage = cleanMessage(message);
 
   return (
     <div className={`mb-2 text-aura1 ${isOwnMessage ? 'text-right' : 'text-left'}`}>
@@ -15,11 +24,12 @@ const Message = ({ text, isOwnMessage }) => {
         {!isOwnMessage && (
           <p className="text-xs text-[rgb(194,153,248,255)] text-aura1">{username}</p>
         )}
-        <p className={`mt-1 text-base ${isOwnMessage ? 'text-white' : 'text-white'}`}>{message}</p>
+        <p className={`mt-1 text-base ${isOwnMessage ? 'text-white' : 'text-white'}`}>{cleanedMessage}</p>
       </div>
     </div>
   );
 };
+
 // Componente para la entrada del nombre de usuario
 const UsernameInput = ({ username, setUsername, setIsUsernameSet }) => (
   <div className="mb-4">
@@ -62,14 +72,14 @@ const MessageInput = ({ message, setMessage, sendMessage, handleKeyDown, textAre
     <div className="relative flex w-full md:w-10/12">
       <textarea
         ref={textAreaRef}
-        className={`appearance-none scrollbar-custom bg-[rgba(54,68,72,255)] ${message.trim() === '' ? 'border-none shadow-none placeholder-gray-400' : 'textarea-shadow border border-neutral-200 text-aura1'}  rounded-lg w-full py-[14px] px-3 text-white  leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16`}
+        className={`appearance-none scrollbar-custom bg-[rgba(54,68,72,255)] ${message.trim() === '' ? 'border-none shadow-none placeholder-gray-400' : 'textarea-shadow border border-neutral-200 text-aura1'}  rounded-lg w-full py-[14px] px-3 text-white leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16`}
         id="messageInput"
         placeholder="Escribe un mensaje"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
         rows={1}
-        style={{ minHeight: '50px', maxHeight: '160px' }} // Tamaño ajustado
+        style={{ minHeight: '50px', maxHeight: '160px' }}
       />
       <button
         onClick={sendMessage}
@@ -149,6 +159,8 @@ export const Chat = () => {
       return;
     }
 
+    if (message.trim() === '') return;
+
     const fullMessage = `${username}: ${message}`;
 
     socketRef.current.send(fullMessage);
@@ -169,7 +181,9 @@ export const Chat = () => {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      sendMessage();
+      if (message.trim() !== '') {
+        sendMessage();
+      }
     } else {
       const textArea = e.target;
       textArea.style.height = 'auto';
@@ -215,3 +229,4 @@ export const Chat = () => {
     </div>
   );
 };
+

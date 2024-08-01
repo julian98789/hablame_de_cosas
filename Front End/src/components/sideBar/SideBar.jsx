@@ -5,7 +5,7 @@ import { IoMail } from "react-icons/io5";
 export const SideBar = () => {
     return (
         <div className="hidden sm:block">
-            <div className=" w-72 h-screen flex flex-col bg-[hsl(205,100%,10%)]">
+            <div className=" w-72 h-screen flex flex-col bg-gradient-to-r from-[hsl(205,91%,8%)] to-[rgba(10,16,23,255)]  ">
                 <div className="flex w-full h-14 justify-center items-center text-3xl font-macondo font-bold gap-2">
                     <div className=" text-[rgb(93,211,209)] cursor-default text-aura-llaves">&#123;
                     </div> <div className=" text-white cursor-default text-aura1"> Hablame de cosas

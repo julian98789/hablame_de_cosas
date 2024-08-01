@@ -19,9 +19,9 @@ export const Home = () => {
                     <div
                         onClick={() => setStateSideBar(!stateSideBar)}
                         className="z-30  sm:hidden ">
-                        <IoMenu className={`text-4xl ${stateSideBar ? 'text-neutral-200 ' : ''} `} />
+                        <IoMenu className={`text-4xl text-neutral-200 icon-shadow ${stateSideBar ? 'text-neutral-200 icon-shadow ' : ''} `} />
                     </div>
-                    <div className="z-30 sm:hidden text-2xl font-macondo font-bold">
+                    <div className="z-30 sm:hidden text-2xl font-macondo font-bold text-aura-llaves text-[rgb(93,211,209)] ">
                         {stateSideBar ? (
                             <>
                                 <div className="flex items-center  gap-2">
