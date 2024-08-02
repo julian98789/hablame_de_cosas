@@ -10,6 +10,10 @@
     text-shadow: 0px 0px 15px #fff; /* Sombra del texto en hover */
   }
 
+  .text-aura2 {
+    text-shadow: 0px 0px 8px #fff;
+}
+
   .text-aura-llaves {
     text-shadow: 0px 0px 10px #5dd3d1;
 }
@@ -60,6 +64,15 @@
     filter: drop-shadow(0px 0px 4px #fff);
   }
 
+  .enviar2-shadow {
+    filter: drop-shadow(0px 0px 2px #fff);
+    transition: filter 0.3s ease;
+  }
+
+  .enviar2-shadow:hover {
+    filter: drop-shadow(0px 0px 3px #fff);
+  }
+
   .textarea-shadow {
     box-shadow: 0px 0px 15px #364448;
   }
@@ -68,21 +81,25 @@
     box-shadow: 0px 0px 40px #c299f8;
   }
 
-  .scrollbar-custom {
-    padding-right: 5px; /* Espacio adicional para el scrollbar */
+  .box-shadow2 {
+    box-shadow: 0px 0px 2px #fff;
   }
-/* Personalizar el scrollbar */
+
+  .scrollbar-custom {
+    padding-right: 5px;
+  }
+
 .scrollbar-custom::-webkit-scrollbar {
   width: 8px; /* Ancho del scrollbar */
 }
 
 .scrollbar-custom::-webkit-scrollbar-track {
-  background: transparent; /* Color de fondo del track */
+  background: transparent; 
 }
 
 .scrollbar-custom::-webkit-scrollbar-thumb {
-  background: #2d4141; /* Color del thumb */
-  border-radius: 4px; /* Esquinas redondeadas */
+  background: #2d4141; 
+  border-radius: 4px; 
 }
 
 .scrollbar-custom::-webkit-scrollbar-thumb:hover {

@@ -14,7 +14,7 @@ export const SideBarMovile = ({state,setState}) => {
         `} >
             <div className=" w-80 h-screen flex flex-col bg-[hsl(209,92%,5%)] ">  
                 <div className="w-full h-14"></div>
-                <div className="flex text-3xl font-macondo font-bold gap-2 mt-8 ml-10 text-[rgb(221,237,115,255)] text-aura-parentesis">/*</div>
+                <div className="flex text-3xl font-macondo font-bold gap-2 mt-10 ml-10 text-[rgb(221,237,115,255)] text-aura-parentesis">/*</div>
                 <div className="flex flex-col  items-center">
                 <a
                         href="https://www.linkedin.com/in/juliangomez060/"

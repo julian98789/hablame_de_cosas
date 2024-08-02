@@ -11,7 +11,7 @@ export const SideBar = () => {
                     </div> <div className=" text-white cursor-default text-aura1"> Hablame de cosas
                     </div>  <div className="text-[rgb(93,211,209)] cursor-default text-aura-llaves">&#125;</div>
                 </div>
-                <div className="flex text-3xl font-macondo font-bold gap-2 mt-2 ml-10 text-[rgb(221,237,115,255)] text-aura-parentesis">/*</div>
+                <div className="flex text-3xl font-macondo font-bold gap-2 mt-7 ml-10 text-[rgb(221,237,115,255)] text-aura-parentesis">/*</div>
                 
                 <div className="flex flex-col  items-center ">
                    

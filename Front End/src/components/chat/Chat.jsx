@@ -1,19 +1,12 @@
+// src/components/Chat.js
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { IoMdSend } from "react-icons/io";
 import toast, { Toaster } from 'react-hot-toast';
-
-// Función para limpiar el texto del mensaje, eliminando líneas vacías
-const cleanMessage = (text) => {
-  return text
-    .split('\n')
-    .filter(line => line.trim() !== '')
-    .join('\n');
-};
+import UserName from './UserName';
 
 // Componente para mostrar un mensaje
 const Message = ({ text, isOwnMessage }) => {
   const [username, message] = text.split(': ', 2);
-  const cleanedMessage = cleanMessage(message);
 
   return (
     <div className={`mb-2 text-aura1 ${isOwnMessage ? 'text-right' : 'text-left'}`}>
@@ -24,47 +17,11 @@ const Message = ({ text, isOwnMessage }) => {
         {!isOwnMessage && (
           <p className="text-xs text-[rgb(194,153,248,255)] text-aura1">{username}</p>
         )}
-        <p className={`mt-1 text-base ${isOwnMessage ? 'text-white' : 'text-white'}`}>{cleanedMessage}</p>
+        <p className={`mt-1 text-base ${isOwnMessage ? 'text-white' : 'text-white'}`}>{message}</p>
       </div>
     </div>
   );
 };
-
-// Componente para la entrada del nombre de usuario
-const UsernameInput = ({ username, setUsername, setIsUsernameSet }) => (
-  <div className="mb-4">
-    <label htmlFor="username" className="block text-gray-700 text-sm font-bold mb-2">
-      Nombre de usuario:
-    </label>
-    <input
-      type="text"
-      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-      id="username"
-      placeholder="Introduce tu nombre"
-      value={username}
-      onChange={(e) => setUsername(e.target.value)}
-    />
-    <button
-      onClick={() => {
-        if (!username.trim()) {
-          toast.dismiss();
-          toast.error('El nombre de usuario no puede estar vacío.', {
-            style: {
-              backgroundColor: 'black',
-              color: 'white',
-            },
-          });
-          return;
-        }
-        localStorage.setItem('username', username);
-        setIsUsernameSet(true);
-      }}
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2"
-    >
-      Confirmar Nombre
-    </button>
-  </div>
-);
 
 // Componente para la entrada del mensaje
 const MessageInput = ({ message, setMessage, sendMessage, handleKeyDown, textAreaRef }) => (
@@ -103,6 +60,21 @@ export const Chat = () => {
   const messageAreaRef = useRef(null);
 
   useEffect(() => {
+    /*
+    const cleanStorage = () => {
+      const lastCleanDate = localStorage.getItem('lastCleanDate');
+      const now = new Date();
+      const oneDay = 24 * 60 * 60 * 1000
+      
+      if (!lastCleanDate || new Date(lastCleanDate).getTime() < now.getTime() - oneDay) {
+        localStorage.removeItem('username');
+        localStorage.removeItem('messages');
+        localStorage.setItem('lastCleanDate', now.toISOString());
+      }
+    };
+
+    cleanStorage();
+*/
     const storedUsername = localStorage.getItem('username');
     const storedMessages = JSON.parse(localStorage.getItem('messages')) || [];
 
@@ -159,8 +131,6 @@ export const Chat = () => {
       return;
     }
 
-    if (message.trim() === '') return;
-
     const fullMessage = `${username}: ${message}`;
 
     socketRef.current.send(fullMessage);
@@ -181,9 +151,7 @@ export const Chat = () => {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (message.trim() !== '') {
-        sendMessage();
-      }
+      sendMessage();
     } else {
       const textArea = e.target;
       textArea.style.height = 'auto';
@@ -210,7 +178,7 @@ export const Chat = () => {
           ))}
         </div>
         {!isUsernameSet ? (
-          <UsernameInput
+          <UserName
             username={username}
             setUsername={setUsername}
             setIsUsernameSet={setIsUsernameSet}
@@ -229,4 +197,3 @@ export const Chat = () => {
     </div>
   );
 };
-
