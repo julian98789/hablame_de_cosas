@@ -29,25 +29,27 @@ const MessageInput = ({ message, setMessage, sendMessage, handleKeyDown, textAre
     <div className="relative flex w-full md:w-10/12">
       <textarea
         ref={textAreaRef}
-        className={`appearance-none scrollbar-custom bg-[rgba(54,68,72,255)] ${message.trim() === '' ? 'border-none shadow-none placeholder-gray-400' : 'textarea-shadow border border-neutral-200 text-aura1'}  rounded-lg w-full py-[14px] px-3 text-white leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto pr-16`}
+        className={`appearance-none scrollbar-custom bg-[rgba(54,68,72,255)] ${message.trim() === '' ? 'border-none shadow-none placeholder-gray-400' : 'textarea-shadow border border-neutral-200 text-aura1'} rounded-lg w-full py-[14px] px-3 text-white leading-tight focus:outline-none focus:shadow-outline resize-none overflow-y-auto`}
         id="messageInput"
         placeholder="Escribe un mensaje"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
         rows={1}
-        style={{ minHeight: '50px', maxHeight: '160px' }}
+        style={{ minHeight: '50px', maxHeight: '160px', paddingRight: '3rem' }} 
       />
       <button
         onClick={sendMessage}
         className={`bg-[rgba(26,36,41,255)] font-bold py-2 px-2 md:py-3 md:px-3 rounded-full absolute right-4 md:bottom-[5px] bottom-2 ${message.trim() === '' ? 'opacity-50 shadow-none cursor-not-allowed' : 'enviar-shadow'}`}
         disabled={message.trim() === ''}
+        
       >
         <IoMdSend className='text-white' />
       </button>
     </div>
   </div>
 );
+
 
 // Componente principal del chat
 export const Chat = () => {
@@ -85,7 +87,8 @@ export const Chat = () => {
 
     setMessages(storedMessages);
 
-    socketRef.current = new WebSocket('ws://localhost:8080/chat');
+    socketRef.current = new WebSocket('ws://hablamedecosas.us-east-2.elasticbeanstalk.com/chat');
+
 
     const handleMessage = (event) => {
       const receivedMessage = event.data;
@@ -130,11 +133,18 @@ export const Chat = () => {
       });
       return;
     }
-
-    const fullMessage = `${username}: ${message}`;
-
+  
+    // Verifica si el mensaje es solo espacios en blanco
+    const trimmedMessage = message.trim();
+    if (trimmedMessage === '') {
+      
+      return;
+    }
+  
+    const fullMessage = `${username}: ${trimmedMessage}`;
+  
     socketRef.current.send(fullMessage);
-
+  
     setMessages((prevMessages) => {
       const newMessages = [
         ...prevMessages,
@@ -143,10 +153,11 @@ export const Chat = () => {
       localStorage.setItem('messages', JSON.stringify(newMessages));
       return newMessages;
     });
-
+  
     setMessage('');
     textAreaRef.current.style.height = '50px'; // Restablecer la altura del textarea
   }, [username, message]);
+  
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
