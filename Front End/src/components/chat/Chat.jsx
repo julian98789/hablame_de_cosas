@@ -4,6 +4,7 @@ import { IoMdSend } from "react-icons/io";
 import toast, { Toaster } from 'react-hot-toast';
 import UserName from './UserName';
 
+
 // Componente para mostrar un mensaje
 const Message = ({ text, isOwnMessage }) => {
   const [username, message] = text.split(': ', 2);
@@ -61,6 +62,7 @@ export const Chat = () => {
   const textAreaRef = useRef(null);
   const messageAreaRef = useRef(null);
 
+  
   useEffect(() => {
     /*
     const cleanStorage = () => {
@@ -87,7 +89,9 @@ export const Chat = () => {
 
     setMessages(storedMessages);
 
-    socketRef.current = new WebSocket('ws://hablamedecosas.us-east-2.elasticbeanstalk.com/chat');
+    const socketUrl = import.meta.env.VITE_SOCKET_URL;
+
+    socketRef.current = new WebSocket(`${socketUrl}`);
 
 
     const handleMessage = (event) => {
