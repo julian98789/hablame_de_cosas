@@ -92,7 +92,8 @@ export const Chat = () => {
     const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
     // Crea una nueva conexión WebSocket
-    socketRef.current = new WebSocket(`ws://${socketUrl}`);
+    //socketRef.current = new WebSocket(`ws://${socketUrl}`);
+    socketRef.current = new WebSocket(`wss://${socketUrl}`);
 
 
     const handleMessage = (event) => {
