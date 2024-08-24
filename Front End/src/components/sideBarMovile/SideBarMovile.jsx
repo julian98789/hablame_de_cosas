@@ -54,7 +54,8 @@ export const SideBarMovile = ({state,setState}) => {
 
             </div>
             <div onClick={()=>setState(!state)} 
-            className={`h-screen w-[calc(100%-288px)] bg-[rgba(15,13,13,0.43)] 
+            className={`h-screen w-[calc(100%-288px)] 
+                
             `}></div>
         </div> 
     );

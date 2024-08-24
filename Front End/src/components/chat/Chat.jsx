@@ -41,7 +41,7 @@ const MessageInput = ({ message, setMessage, sendMessage, handleKeyDown, textAre
       />
       <button
         onClick={sendMessage}
-        className={`bg-[rgba(26,36,41,255)] font-bold py-2 px-2 md:py-3 md:px-3 rounded-full absolute right-4 md:bottom-[5px] bottom-2 ${message.trim() === '' ? 'opacity-50 shadow-none cursor-not-allowed' : 'enviar-shadow'}`}
+        className={`bg-[rgba(26,36,41,255)] font-bold py-2 px-2 md:py-3 md:px-3 rounded-full absolute right-4 md:bottom-[5px] bottom-2 ${message.trim() === '' ? 'opacity-50 shadow-none cursor-default' : 'enviar-shadow'}`}
         disabled={message.trim() === ''}
         
       >
@@ -64,11 +64,11 @@ export const Chat = () => {
 
   
   useEffect(() => {
-    /*
+    
     const cleanStorage = () => {
       const lastCleanDate = localStorage.getItem('lastCleanDate');
       const now = new Date();
-      const oneDay = 24 * 60 * 60 * 1000
+      const oneDay = 24 * 60 
       
       if (!lastCleanDate || new Date(lastCleanDate).getTime() < now.getTime() - oneDay) {
         localStorage.removeItem('username');
@@ -78,7 +78,7 @@ export const Chat = () => {
     };
 
     cleanStorage();
-*/
+
     const storedUsername = localStorage.getItem('username');
     const storedMessages = JSON.parse(localStorage.getItem('messages')) || [];
 
@@ -92,8 +92,8 @@ export const Chat = () => {
     const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
     // Crea una nueva conexión WebSocket
-    //socketRef.current = new WebSocket(`ws://${socketUrl}`);
-    socketRef.current = new WebSocket(`wss://${socketUrl}`);
+    socketRef.current = new WebSocket(`ws://localhost:8080/chat`);
+    //socketRef.current = new WebSocket(`wss://${socketUrl}`);
 
 
     const handleMessage = (event) => {

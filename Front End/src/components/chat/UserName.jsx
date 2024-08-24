@@ -20,6 +20,7 @@ const UserName = ({ username, setUsername, setIsUsernameSet }) => {
                     type="text"
                     className={`bg-[rgba(54,68,72,255)] border border-neutral-200 rounded-lg w-full py-2 px-3  focus:outline-none ${username.trim() === '' ? 'placeholder-gray-400' : 'text-white text-aura2 box-shadow2 '}`}
                     id="username"
+                    autoComplete="off"
                     placeholder="Introduce tu nombre"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
